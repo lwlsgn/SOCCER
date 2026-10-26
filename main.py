@@ -247,12 +247,18 @@ with st.sidebar:
         st.markdown("[API-FOOTBALL 공식 사이트](https://www.api-football.com/)")
 
     league_name = st.selectbox("리그", list(LEAGUES.keys()))
-    season = st.selectbox("시즌 시작 연도", list(range(date.today().year, date.today().year - 7, -1)), index=0)
-    st.caption("시즌 시작 연도 기준입니다. 리그별 제공 범위는 API 요금제에 따라 다를 수 있습니다.")
-    st.divider()
-    st.session_state["squad_name"] = st.text_input(
-        "스쿼드 이름", value=st.session_state["squad_name"], max_chars=50
-    )
+    # 무료 API 플랜에서 접근 가능한 시즌
+available_seasons = [2024, 2023, 2022]
+
+season = st.selectbox(
+    "시즌 시작 연도",
+    available_seasons,
+    index=0
+)
+
+st.caption(
+    "무료 API 플랜에서는 2022~2024 시즌을 선택하세요."
+)
     st.session_state["formation"] = st.selectbox(
         "포메이션",
         list(FORMATIONS.keys()),
