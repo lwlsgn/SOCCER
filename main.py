@@ -233,9 +233,11 @@ init_state()
 st.title("⚽ My Football Squad")
 st.caption("실제 축구 선수 데이터를 검색하고 나만의 스쿼드를 구성하세요.")
 
+
 with st.sidebar:
     st.header("⚙️ 설정")
     api_key = get_api_key()
+
     if api_key:
         st.success("API 키가 설정되어 있습니다.")
     else:
@@ -243,29 +245,42 @@ with st.sidebar:
         st.markdown(
             "Streamlit Cloud의 **Settings → Secrets**에 다음 항목을 추가하세요."
         )
-        st.code('API_FOOTBALL_KEY = "발급받은_API_키"', language="toml")
-        st.markdown("[API-FOOTBALL 공식 사이트](https://www.api-football.com/)")
+        st.code(
+            'API_FOOTBALL_KEY = "발급받은_API_키"',
+            language="toml",
+        )
+        st.markdown(
+            "[API-FOOTBALL 공식 사이트](https://www.api-football.com/)"
+        )
 
-    league_name = st.selectbox("리그", list(LEAGUES.keys()))
+    league_name = st.selectbox(
+        "리그",
+        list(LEAGUES.keys()),
+    )
+
     # 무료 API 플랜에서 접근 가능한 시즌
-available_seasons = [2024, 2023, 2022]
+    available_seasons = [2024, 2023, 2022]
 
-season = st.selectbox(
-    "시즌 시작 연도",
-    available_seasons,
-    index=0
-)
+    season = st.selectbox(
+        "시즌 시작 연도",
+        available_seasons,
+        index=0,
+    )
 
-st.caption(
-    "무료 API 플랜에서는 2022~2024 시즌을 선택하세요."
-)
+    st.caption(
+        "무료 API 플랜에서는 2022~2024 시즌을 선택하세요."
+    )
+
     st.session_state["formation"] = st.selectbox(
         "포메이션",
         list(FORMATIONS.keys()),
-        index=list(FORMATIONS.keys()).index(st.session_state["formation"]),
+        index=list(FORMATIONS.keys()).index(
+            st.session_state["formation"]
+        ),
     )
 
 search_col, info_col = st.columns([2, 1])
+
 with search_col:
     st.subheader("🔎 선수 검색")
     with st.form("player_search_form"):
