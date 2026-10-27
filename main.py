@@ -271,13 +271,49 @@ with st.sidebar:
         "무료 API 플랜에서는 2022~2024 시즌을 선택하세요."
     )
 
-    st.session_state["formation"] = st.selectbox(
+    
+    new_formation = st.selectbox(
         "포메이션",
         list(FORMATIONS.keys()),
         index=list(FORMATIONS.keys()).index(
             st.session_state["formation"]
         ),
     )
+
+    previous_formation = st.session_state.get(
+        "previous_formation",
+        st.session_state["formation"],
+    )
+
+    if new_formation != previous_formation:
+        # 기존 포메이션에서 배치된 선수들을 순서대로 가져오기
+        old_slots = [
+            slot for slot, _, _ in FORMATIONS[previous_formation]
+        ]
+
+        assigned_players = [
+            st.session_state["starting_xi"][slot]
+            for slot in old_slots
+            if st.session_state["starting_xi"].get(slot) is not None
+        ]
+
+        # 새 포메이션의 위치에 기존 선수들을 재배치
+        new_slots = [
+            slot for slot, _, _ in FORMATIONS[new_formation]
+        ]
+
+        st.session_state["starting_xi"] = {
+            new_slots[i]: pid
+            for i, pid in enumerate(assigned_players[:len(new_slots)])
+        }
+
+        st.session_state["formation"] = new_formation
+        st.session_state["previous_formation"] = new_formation
+        st.rerun()
+    else:
+        st.session_state["formation"] = new_formation
+        st.session_state["previous_formation"] = new_formation
+
 
 search_col, info_col = st.columns([2, 1])
 
